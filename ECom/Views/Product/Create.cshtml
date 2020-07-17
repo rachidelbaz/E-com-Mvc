@@ -1,0 +1,131 @@
+﻿@model List<ECom.Entities.Category>
+@{
+    ViewBag.Title = "Create Product";
+}
+
+<div class="container">
+    <form id="CreateProduct">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <h2>Create Product</h2>
+                    <label>Name:</label>
+                    <input class="form-control" name="Name" />
+                    <br />
+                    <label>Description:</label>
+                    <input name="Description" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Price:</label>
+                    <input name="Price" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label>Category:</label>
+                    <select name="CategoryID">
+                        @foreach (var category in Model)
+                        {
+                            <option value="@category.ID">@category.Name</option>
+                        }
+                    </select>
+                </div>
+                <div>
+                    <label>Image:</label>
+                    <input id="ImageURL" name="ImageURL" type="hidden" />
+                    <input id="ImageUpload" name="Image" type="file" accept=".jpg,.png" />
+                </div>
+                
+                <button type="button" class="btn btn-danger" id="BtnSave">Save</button>
+            </div>
+            <div class="col-md-4">
+                <div class="thumb">
+                    <img class="img-thumbnail img-fluid" id="ImageLoaded" src="/Content/images/placeholder-image.png">
+                </div>
+               
+            </div>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    $("#BtnSave").click(function () {
+        if ($('#CreateProduct').validate()) {
+            $.ajax({
+                type: 'POST',
+                url: '/Product/Create',
+                data: $("#CreateProduct").serialize(),
+
+            }).done(function (Response) {
+                $("#tableContiner").html(Response);
+                $("#CreateProduct").html("");
+                //alert(Response);
+            }).fail(function () { alert("Fail") });
+        }
+        else {
+
+        }
+       
+    });
+    $("#ImageUpload").change(function () {
+
+        var element = this;
+        var formData = new FormData();
+        var Totalfiles = element.files.length;
+
+        for (var i = 0; i < Totalfiles; i++) {
+            var file = element.files[i];
+            formData.append("Image", file);
+        }
+
+        $.ajax({
+
+            type: 'POST',
+            url: '/Shared/UploadImage',
+            dataType: 'json',
+            data: formData,
+
+            processData: false,
+            contentType: false,
+
+        }).done(function (response) {
+            console.log(response);
+            if (response.Success) {
+                $("#ImageURL").val(response.ImageURL);
+                $("#ImageLoaded").attr("src", response.ImageURL);
+
+            }
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("FAIL");
+        });
+    });
+    $('#CreateProduct').validate({
+		rules: {
+			Name: {
+				required: true,
+				minlength: 5,
+				maxlength: 50,
+			},
+			Description: {
+				maxlength: 500
+			},
+			Price: {
+				range: [1, 100000]
+			}
+		},
+		messages: {
+			Name: {
+				required: 'Name is required',
+				minlength: 'Minimum Length is 5',
+				maxlength: 'Maximum Length is 50'
+			},
+			Description: {
+				maxlength: 'Maximum Length is 500'
+			},
+			Price: {
+				range: 'Price must be within range of 1 - 100000.'
+			}
+		}
+	});
+</script>
+
+

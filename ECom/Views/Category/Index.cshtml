@@ -1,0 +1,30 @@
+﻿@model ECom.ViewModels.CategorySearchViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container">
+    
+
+    <div id="tableContiner">
+        @{
+            Html.RenderAction("CategoryTable");
+            
+
+        }
+        
+    </div>
+    <hr />
+    <div id="actionContiner">
+
+    </div>
+</div>
+<script>
+
+    function focusAction(controlToFocus) {
+        $('html, body').animate({
+            scrollTop: $('#'+controlToFocus).offset().top -100
+            },1000);
+    }
+
+</script>

@@ -1,0 +1,200 @@
+﻿@model ECom.ViewModels.EditProductViewModel
+
+@{
+    ViewBag.Title = "Edit";
+    var ImageUrl = !string.IsNullOrEmpty(Model.ImageURL) ? Model.ImageURL : "/Content/images/placeholder-image.png";
+
+}
+
+
+    <div class="container">
+        <h2>Edit Product</h2>
+        <form id="EditProduct">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <input type="hidden" name="ID" value="@Model.ID" />
+
+
+                        <div class="form-group">
+                            <label>Category:</label>
+                            <select class="form-control" name="CategoryID">
+                                @foreach (var category in Model.AvailableCategories)
+                                {
+                                    var selected = category.ID == Model.CategoryID ? "selected" : string.Empty;
+                                    <option value="@category.ID" @selected>@category.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <label>Name<span class="text-danger">*</span>:</label>
+                        <input class="form-control" name="Name" value="@Model.Name" />
+                        <br />
+                        <label>Description:</label>
+                        <input name="Description" class="form-control" value="@Model.Description" />
+                        <br />
+                        <div class="form-group">
+                            <label>Price:</label>
+                            <input name="Price" class="form-control" value="@Model.Price" />
+                        </div>
+                        <label>Image:</label>
+                        <input id="ImageURL" name="ImageURL" type="hidden" value="@ImageUrl" />
+                        <input id="ImageUpload" name="Image" type="file" accept=".jpg,.png" />
+                    </div>
+
+                </div>
+
+                <div class="col-md-4">
+                    <div class="thumb">
+                        <img class="img-thumbnail img-fluid" id="ImageLoaded" src="@ImageUrl" />
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-danger" id="BtnSave">Save</button>
+            <button type="button" class="btn btn-danger" id="cancelBtn">Cancel</button>
+
+        </form>
+    </div>
+   
+
+@*@using (Html.BeginForm())
+    {
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <div class="form-horizontal">
+            <h4>Edit Product</h4>
+            <hr />
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.ID)
+
+            <div class="col-md-10">
+                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="form-group">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
+                    @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
+
+                    @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+
+
+        </div>
+        <div class="col-md-4">
+            <div class="thumb">
+                @{var ImageUrl = string.IsNullOrEmpty(Model.ImageURL) ? DefaultImageUrl : Model.ImageURL; }
+                <img class="img-thumbnail img-fluid" id="ImageLoaded" src="@ImageUrl">
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <button type="button" class="btn btn-danger" id="BtnSave">Save</button>
+            <button type="button" class="btn btn-danger" id="cancelBtn">Cancel</button>
+        </div>
+    </div>*@
+
+
+
+<script>
+    $("#BtnSave").click(function () {
+        debugger;
+        if ($("#EditProduct").validate()) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Edit","Product")', /*'/product/edit',*/
+                data: $("#EditProduct").serialize()
+
+            }).done(function (response) {
+
+                //alert(response);
+                $("#tableContiner").html(response);
+                $("#EditProduct").html("");
+
+            }).fail(function () {
+                swal("warning!", "Please enter all required fields!", "warning");
+            });
+        }
+        else {
+             swal({
+				title: "Warning",
+				text: "Please enter all valid data in fields.",
+				icon: "warning",
+				buttons: true,
+				dangerMode: true,
+			});
+        }
+    });
+
+
+
+    $("#cancelBtn").click(function () {
+
+        $("#actionContiner").html("");
+        focusAction("tableContiner");
+
+    });
+    $("#BtnSave").click(function () {
+        $("#actionContiner").html("");
+        focusAction("tableContiner");
+    });
+    //$(".editBtn").click(function () {
+    //     $("#actionContiner").html("");
+    //    focusAction("tableContiner");
+    //});
+    
+        $("#EditProduct").validate({
+            rules: {
+                CategoryID: {
+                    required: true
+                },
+                Name: {
+                    required: true,
+                    minlength: 4,
+                    maxlength:50
+                },
+                Description: {
+                    minlength: 20,
+                    maxlength:100
+                },
+                Price: {
+                    required: true,
+                    range:[1,100000]
+                }
+
+
+            },
+            messages: {
+                CategoryID: {
+                    required: 'category is required'
+                },
+                Name: {
+                    required: 'Name is required',
+                    minlength:'minimum length is 4',
+                    maxlength:'Maximum Length is 50'
+                },
+                Description: {
+                    minlength: 'minimum Length is 20',
+                    maxlength:'Maximum Length is 100'
+                },
+                Price: {
+                    required: 'Price is required',
+                    range: 'Price must be within range of 1 - 100000.',
+                    
+                }
+            }
+        });
+
+  
+
+</script>

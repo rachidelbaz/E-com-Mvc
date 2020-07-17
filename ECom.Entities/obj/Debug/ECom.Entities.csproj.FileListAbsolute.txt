@@ -1,0 +1,5 @@
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Entities\obj\Debug\ECom.Entities.csprojAssemblyReference.cache
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Entities\bin\Debug\ECom.Entities.dll
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Entities\bin\Debug\ECom.Entities.pdb
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Entities\obj\Debug\ECom.Entities.dll
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Entities\obj\Debug\ECom.Entities.pdb

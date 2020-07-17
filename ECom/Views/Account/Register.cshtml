@@ -1,0 +1,414 @@
+﻿
+@model ECom.ViewModels.UserAccountViewModel
+
+@Html.AntiForgeryToken()
+<div class="container-fluid pt-3">
+    <form id="RegisterClient">
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+
+
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.user.FisrtName, htmlAttributes: new { @class = "control-label col-md-2" })<span class="text-danger ml-0"><b>*</b></span>
+                    <div class="col-md-10">
+                        <input type="text" id="FirstName" name="FisrtName" class="form-control" />
+                        <div id="FirstName_Error"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.user.LastName, htmlAttributes: new { @class = "control-label col-md-2" })<span class="text-danger ml-0"><b>*</b></span>
+                    <div class="col-md-10">
+                        <input type="text" id="LastName" name="LastName" class="form-control" />
+                        <div id="LastName_Error"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.user.Email, htmlAttributes: new { @class = "control-label col-md-2" })<span class="text-danger ml-0"><b>*</b></span>
+                    <div class="col-md-10">
+                        <input type="email" id="Email" name="Email" class="form-control" />
+                        <div id="Email_Error"></div>
+                    </div>
+                </div>
+                <div class="form-group d-none">
+                    <div class="col-md-10">
+                        <input type="hidden" class="form-control" name="UserName" id="UserNameEditor" />
+
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.user.Adresse, htmlAttributes: new { @class = "control-label col-md-2" })<span class="text-danger ml-0"><b>*</b></span>
+                    <div class="col-md-10">
+                        <input type="text" class="form-control" name="Adresse" id="Adresse" />
+                        <div id="Adresse_Error"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.user.Phone, htmlAttributes: new { @class = "control-label col-md-2" })<span class="text-danger ml-0"><b>*</b></span>
+                    <div class="col-md-10">
+                        <input type="tel" class="form-control" name="Phone" id="Phone" />
+                        <div id="Phone_Error"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.user.PassWord, htmlAttributes: new { @class = "control-label col-md-2" })<span class="text-danger ml-0"><b>*</b></span>
+                    <div class="col-md-10">
+                        <input type="password" class="form-control" name="PassWord" id="PassWord" />
+                        <div id="PassWord_Error"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.user.ConformePasseWord, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <input type="password" class="form-control" name="ConformePasseWord" id="ConfirmePasseWord" />
+                        <div id="ConfirmePasseWord_Error"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10 d-flex justify-content-between">
+                        <button id="BtnCreate" type="button" class="btn btn-default">Create</button>
+                        <a id="BtnCreate" href="@Url.Action("Login","Account")" class="btn btn-outline-primary">Login</a>
+                    </div>
+                </div>
+
+
+
+            </div>
+
+
+        </div>
+    </form>
+</div>
+<script>
+        $(function() {
+
+        $("#FirstName_Error").hide();
+        $("#LastName_Error").hide();
+        $("#Email_Error").hide();
+        $("#Adresse_Error").hide();
+        $("#Phone_Error").hide();
+        $("#PassWord_Error").hide();
+         $("#ConfirmePasseWord_Error").hide();
+        var FirstName_Error = false;
+        var LastName_Error = false;
+        var Email_Error = false;
+        var Adresse_Error = false;
+        var Phone_Error = false;
+        var PassWord_Error = false;
+        var ConfirmePasseWord_Error = false;
+
+            $("#FirstName").focusout(function () {
+
+            Check_FirstName();
+        });
+        $("#LastName").focusout(function () {
+            Check_LastName();
+        });
+             $("#Email").focusout(function () {
+
+            Check_Email();
+        });
+        $("#Adresse").focusout(function () {
+            Check_Adresse();
+        });
+             $("#Phone").focusout(function () {
+
+            Check_Phone();
+        });
+        $("#PassWord").focusout(function () {
+            Check_PassWord();
+        });
+              $("#ConfirmePasseWord").focusout(function () {
+            Check_ConfirmePasseWord();
+        });
+
+            function Check_FirstName() {
+
+                let pattern = new RegExp(/^[a-zA-Z]*$/);
+                let FirstName = $("#FirstName").val();
+                if (pattern.test($.trim(FirstName)) && FirstName !== '') {
+                    $("#FirstName_Error").hide();
+                    $("#FirstName").css("border-color","green");
+
+                }
+                  else {
+                      $("#FirstName_Error").show();
+                      $("#FirstName_Error").html("Please enter a valide FirstName.");
+                      $("#FirstName").css("border-color","red");
+                    $("#FirstName_Error").css("color", "red");
+                        FirstName_Error = true;
+                }
+            }
+            function Check_LastName() {
+
+                let pattern = new RegExp("^[a-zA-Z]*$");
+                let LastName = $("#LastName").val();
+                if (pattern.test($.trim(LastName)) && LastName !== '') {
+                    $("#LastName_Error").hide();
+                    $("#LastName").css("border-color", "green");
+
+                } else {
+                    $("#LastName_Error").show();
+                    $("#LastName").css("border-color", "red");
+                    $("#LastName_Error").html("Please enter a valide LastName.");
+                    $("#LastName_Error").css("color", "red");
+                    LastName_Error = true;
+                       }
+            }
+            var UserName;
+            function Check_Email() {
+
+                let pattern = new RegExp(/^([a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+(\.[a-z\d!#$%&'*+\-\/=?^_`{|}~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]+)*|"((([ \t]*\r\n)?[ \t]+)?([\x01-\x08\x0b\x0c\x0e-\x1f\x7f\x21\x23-\x5b\x5d-\x7e\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|\\[\x01-\x09\x0b\x0c\x0d-\x7f\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))*(([ \t]*\r\n)?[ \t]+)?")@@(([a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\d\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.)+([a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]|[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF][a-z\d\-._~\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]*[a-z\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])\.?$/i);
+                let Email = $("#Email").val();
+                if (pattern.test($.trim(Email)) && Email !== '') {
+                    $("#Email_Error").hide();
+                    $("#Email").css("border-color", "green");
+
+                    let lastIndexOf = Email.lastIndexOf("@@");
+
+                    $("#UserNameEditor").val(Email.substring(0, lastIndexOf));
+
+                    UserName = Email.substring(0, lastIndexOf);
+
+                } else {
+                       $("#Email_Error").show();
+                      $("#Email_Error").html("Please enter a valide Email.");
+                      $("#Email").css("border-color","red");
+                    $("#Email_Error").css("color", "red");
+                     Email_Error = true;
+                }
+            }
+
+             function Check_Adresse() {
+
+                 let Adresse = $("#Adresse").val();
+                 if (Adresse.length>10 && Adresse !== '') {
+                    $("#Adresse_Error").hide();
+                    $("#Adresse").css("border-color", "green");
+
+                } else {
+                       $("#Adresse_Error").show();
+                      $("#Adresse_Error").html("Please enter your Adresse.");
+                      $("#Adresse").css("border-color","red");
+                    $("#Adresse_Error").css("color", "red");
+                     Adresse_Error = true;
+                }
+            }
+            function Check_Phone() {
+
+                let pattern = new RegExp(/(\+212|0)([ \-_/]*)(\d[ \-_/]*){9}/g);
+                let Phone = $("#Phone").val();
+                if (pattern.test($.trim(Phone)) && Phone !== '') {
+                    $("#Phone_Error").hide();
+                    $("#Phone").css("border-color", "green");
+
+                } else {
+                       $("#Phone_Error").show();
+                      $("#Phone_Error").html("Please a valide Phone.");
+                      $("#Phone").css("border-color","red");
+                    $("#Phone_Error").css("color", "red");
+                     Phone_Error = true;
+                }
+            }
+            var Correct_PassWord;
+            function Check_PassWord() {
+
+                let pattern = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+                let PassWord = $("#PassWord").val();
+                if (pattern.test($.trim(PassWord)) && PassWord !== '') {
+                    if (PassWord.length < 6) {
+                        $("#PassWord_Error").show();
+                        $("#PassWord_Error").html("Your PassWord must be at least 6 caracters long.");
+                        $("#PassWord").css("border-color", "red");
+                        $("#PassWord_Error").css("color", "red");
+                        PassWord_Error = true;
+
+                    } else {
+                          $("#PassWord_Error").hide();
+                    $("#PassWord").css("border-color", "green");
+                    Correct_PassWord = PassWord;
+                    }
+
+                } else {
+                       $("#PassWord_Error").show();
+                      $("#PassWord_Error").html("Please provide a PassWord.");
+                      $("#PassWord").css("border-color","red");
+                    $("#PassWord_Error").css("color", "red");
+                     PassWord_Error = true;
+                }
+            }
+            function Check_ConfirmePasseWord() {
+
+                let pattern = new RegExp("^(((?=.*[a-z])(?=.*[A-Z]))|((?=.*[a-z])(?=.*[0-9]))|((?=.*[A-Z])(?=.*[0-9])))(?=.{6,})");
+                let ConfirmePasseWord = $("#ConfirmePasseWord").val();
+                if (pattern.test($.trim(ConfirmePasseWord)) && ConfirmePasseWord !== '') {
+                    if (!ConfirmePasseWord.match(Correct_PassWord)) {
+                        $("#ConfirmePasseWord_Error").show();
+                        $("#ConfirmePasseWord_Error").html("Please enter a PassWord as above.");
+                        $("#ConfirmePasseWord").css("border-color", "red");
+                        $("#ConfirmePasseWord_Error").css("color", "red");
+                        ConfirmePasseWord = true;
+
+                    } else {
+                         $("#ConfirmePasseWord_Error").hide();
+                    $("#ConfirmePasseWord").css("border-color", "green");
+                    }
+
+
+                } else {
+                       $("#ConfirmePasseWord_Error").show();
+                      $("#ConfirmePasseWord_Error").html("Please confirme your PassWord.");
+                      $("#ConfirmePasseWord").css("border-color","red");
+                    $("#ConfirmePasseWord_Error").css("color", "red");
+                     ConfirmePasseWord = true;
+                }
+            }
+            $("#BtnCreate").click(function () {
+                debugger;
+                if (FirstName_Error == false &&
+                    LastName_Error == false &&
+                    Email_Error == false &&
+                    Adresse_Error == false &&
+                    Phone_Error == false &&
+                    PassWord_Error == false &&
+                    ConfirmePasseWord_Error == false) {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Register","Account")',
+                        data: $("#RegisterClient").serialize(),
+                    }).done(function () {
+
+                        swal( UserName , "Your registration has been successful!", "success").then((value)=> { window.location = "@Url.Action("Login","Account")";});
+
+                    }).fail(function () {
+                        swal("Warning", "Your registration has been interrupted!", "warning");
+                    });
+                }
+                else {
+                    swal("Warning", "Your registration has been interrupted!", "warning");
+                }
+
+
+                });
+
+        });
+
+
+
+        //$("#RegisterClient").validate({
+        //    rules: {
+        //        FisrtName: {
+        //            required: true,
+        //            minlenght: 5,
+        //            maxlenght: 20
+        //        },
+        //        LastName: {
+        //            required: true,
+        //            minlenght: 5,
+        //            maxlenght: 20
+        //        },
+        //        Email: {
+        //            required: true,
+        //            email: true
+        //        },
+        //        Adresse: {
+        //            reauired: true,
+        //            minlenght: 20,
+        //        },
+        //        Phone: {
+        //            required: true,
+        //            tel: true,
+        //        },
+        //        PassWord: {
+        //            required: true,
+        //            minlenght: 6,
+
+        //        },
+        //        ConformePasseWord: {
+        //            required: true,
+        //            equalTo: "PassWord"
+        //        }
+
+        //    },
+        //    messages: {
+        //        FisrtName: {
+        //            required: "Please enter your FirstName",
+        //            minlenght: "Your FirstName must consist of at least 5 caracters ",
+
+        //        },
+        //        LastName: {
+        //            required: "Please enter your LastName",
+
+        //        },
+        //        Email: {
+        //            required: "Please enter your Email",
+        //            email: true
+        //        },
+        //        Adresse: {
+        //            reauired: "Please enter your Adresse",
+
+        //        },
+        //        Phone: {
+        //            required: "Please enter your Phone",
+        //            tel: true,
+        //        },
+        //        PassWord: {
+        //            required: "Please provide a PassWord",
+        //            minlenght: "Your PassWord must be at least 6 caracters long",
+
+        //        },
+        //        ConformePasseWord: {
+        //            required: "Please provide a PassWord",
+        //            equalTo: "Please enter a PassWord as above"
+        //        }
+        //    }
+        //});
+        //var UserName;
+        //$("#Email").focusout(function () {
+        //    debugger;
+        //    //var Email = $("#EmailEditor").val();
+        //    //var search = Email.search("@@");
+        //    //var Sp = Email.split('@@'); var UserName = Sp[0];
+        //    //var replace = Email.replace(/@@.*/,"");
+        //    var lastIndexOf = $("#Email").val().lastIndexOf("@@");
+
+        //    if ($("#Email").val().length != 0 && lastIndexOf != 0) {
+
+        //        $("#UserNameEditor").val($("#Email").val().substring(0, lastIndexOf));
+        //        UserName = $("#Email").val().substring(0, lastIndexOf);
+        //    }
+        //    else {
+        //        UserName = "";
+        //    }
+        //});
+
+        @*$("#BtnCreate").click(function () {
+            debugger;
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("Register","Account")',
+                data: $("#RegisterClient").serialize(),
+            }).done(function () {
+                if ($("#RegisterClient").validate()) {
+                swal("Success", "Your registration has been successful! Your UserName :"+UserName, "success");
+            }
+            }).fail(function () {
+                alert("Fail");
+            });
+
+        });*@
+</script>
+
+
+
+
+

@@ -1,0 +1,192 @@
+﻿@model ECom.ViewModels.ProductSearchViewModel
+@{
+    ViewBag.Title = "ProductTable";
+}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+@*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">*@
+
+@*<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>*@
+
+<div>
+    <div class="row">
+        <div class="col-md-8">
+            <form method="post">
+                <div class="form-group">
+                    <label>Search</label>
+                    <input class="form-control" id="txtsearch" name="search" />
+
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Action </label>
+                <div class="row">
+                    <div class="col-md-4">
+                        <button class="form-control" type="button" id="SearchBtn">Search</button>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="form-control" type="button" id="BtnNew">New</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<table id="myTable" class="table table-striped">
+    <thead>
+        <tr>
+
+            <th class="font-weight-bold">Product Name</th>
+            <th class="font-weight-bold">Category</th>
+            <th class="font-weight-bold">Price</th>
+            <th class="font-weight-bold wrap-td">Actions</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.products != null && Model.products.Count > 0)
+        {
+
+            foreach (var product in Model.products)
+            {
+                <tr>
+                    <td>@product.Name</td>
+                    <td>
+                        @if (product.category != null)
+                        {
+                            <text>@product.category.Name</text>
+                        }
+                        else
+                        {
+                            <text>-</text>
+                        }
+                    </td>
+                    <td>@product.Price</td>
+                    <td class="wrap-td">
+                        <button class="editBtn" data-id="@product.ID">Edit</button>
+                        <button class="deleteBtn" data-id="@product.ID">Delete</button>
+                        <button class="addtoCart" data-id="@product.ID">Add To Cart</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td class="text-danger" colspan="4">No Products found.</td>
+                <td style="display: none"></td>
+                <td style="display: none"></td>
+                <td style="display: none"></td>
+            </tr>
+        }
+    </tbody>
+
+
+</table>
+<div>
+    @if (Model.pager != null && Model.pager.TotalPages > 1)
+    {
+        if (Model.pager.CurrentPage > 1)
+        {
+            <button class="PageNo" data-pageNo="@(Model.pager.StartPage)">First</button>
+            <button class="PageNo" data-pageNo="@(Model.pager.CurrentPage-1)">Previous</button>
+        }
+
+        for (int page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+        {
+            var activClass = Model.pager.CurrentPage == page ? "active bg-info" : string.Empty;
+            <button class="PageNo @activClass" data-pageNo="@(page)">@page</button>
+        }
+        if (Model.pager.CurrentPage < Model.pager.EndPage)
+        {
+            <button class="PageNo" data-pageNo="@(Model.pager.CurrentPage+1)">Next</button>
+            <button class="PageNo" data-pageNo="@(Model.pager.EndPage)">Last</button>
+        }
+
+
+    }
+</div>
+<script>
+
+    //$('#myTable').DataTable(); pagination with jquery
+
+    $(".PageNo").click(function () {
+
+        $.ajax({
+            url: '@Url.Action("ProductTable","Product")', //"/Product/ProductTable",
+            data: {
+                search: '@Model.SearchTerm',
+                pageNo: $(this).attr("data-pageNo")
+
+            }
+        }).done(function (Response) {
+            $("#tableContiner").html(Response);
+        }
+        ).fail(function () {
+            alert("Fail");
+        })
+    });
+
+
+
+    $("#SearchBtn").click(function () {
+        debugger;
+        var SearchValue = $("#txtsearch").val();
+        $.ajax({
+            url: '@Url.Action("ProductTable","Product")', //'/Product/ProductTable',
+            data: {
+                search: SearchValue
+            }
+
+        }).done(function (Response) {
+            $("#tableContiner").html(Response);
+        }).fail(function () {
+            alert("Fail");
+        });
+    });
+    $("#BtnNew").click(function () {
+       
+        $.ajax({
+            url:'/Product/Create',
+
+        }).done(function (response) {
+            $("#actionContiner").html(response);
+            alert(response);
+        }).fail(function () {
+            alert("Fail");
+        });
+    });
+    $(".editBtn").click(function () {
+
+        $.ajax({
+            url: '/Product/Edit/',
+            data: {
+                ID: $(this).attr("data-id"),
+
+            }
+        }).done(function (Response) {
+            $("#actionContiner").html(Response);
+        }).fail(function () {
+            alert("Fail");
+        });
+    });
+    $(".deleteBtn").click(function () {
+        var ConfirmDelete = confirm("Are you sure to delete this?");
+        if (ConfirmDelete) {
+            $.ajax({
+                type: "POST",
+                url: "/Product/Delete",
+                data: { ID: $(this).attr("data-id") }
+            }).done(function (Response) {
+                $("#tableContiner").html(Response);
+            }).fail(function () {
+                alert("Fail");
+            });
+        }
+
+    });
+</script>

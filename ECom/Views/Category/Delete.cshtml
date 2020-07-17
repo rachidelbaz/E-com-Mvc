@@ -1,0 +1,17 @@
+﻿@model ECom.Entities.Category
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete Category</h2>
+
+<form method="post">
+    <label>Name:</label>
+    <input name="ID" value="@Model.ID" hidden />
+    <input name="Name" readonly="readonly" value="@Model.Name" />
+    <br />
+    <label>Description:</label>
+    <input name="Description" readonly="readonly" value="@Model.Description" />
+    <br />
+    <button type="submit">Delete</button>
+</form>

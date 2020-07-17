@@ -1,0 +1,164 @@
+﻿@model ECom.ViewModels.EditCategoryViewModel
+@{
+    ViewBag.Title = "Edit";
+    var TrueChecked = Model.isFeatured ? "checked" : string.Empty;
+    var FalseChecked = !Model.isFeatured ? "checked" : string.Empty;
+    var ImageUrl = !string.IsNullOrEmpty(Model.ImageURL) ? Model.ImageURL : "/Content/images/placeholder-image.png";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+@*<form method="post">
+        <label>Name:</label>
+        <input name="Name" value="@Model.Name" />
+        <br />
+        <label>Description:</label>
+        <input name="Description" value="@Model.Description" />
+        <br />
+        <label>is featured ? </label>
+        <input type="radio" id="isFeatured" name="isFeatured" value="true" @TrueChecked />True
+        <input type="radio" id="isNotFeatured" name="isFeatured" value="false" @FalseChecked />False
+        <button type="submit">Save</button>
+    </form>*@
+<div class="container">
+    <h2>Edit Category</h2>
+    <form id="EditCategory">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <input type="hidden" name="ID" value="@Model.ID" />
+                    <label>Name<span class="text-danger">*</span>:</label>
+                    <input class="form-control" name="Name" value="@Model.Name" />
+                    <br />
+                    <label>Description:</label>
+                    <input name="Description" class="form-control" value="@Model.Description" />
+                    <br />
+                    <label>Image:</label>
+                    <input id="ImageURL" name="ImageURL" type="hidden" value="@ImageUrl" />
+                    <input id="ImageUpload" name="Image" type="file" accept=".jpg,.png" />
+                </div>
+                <div class="form-group">
+                    <label>is featured ? </label>
+                    <div class="input-group">
+                        <div class="radio form-control">
+                            <input type="radio" id="isFeatured" name="isFeatured" value="true" @TrueChecked>True
+                        </div>
+                        <div class="radio form-control">
+                            <input type="radio" id="isNotFeatured" name="isFeatured" value="false" @FalseChecked>False
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+                <div class="thumb">
+                    <img class="img-thumbnail img-fluid" id="ImageLoaded" src="@ImageUrl" />
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-danger" id="BtnSave">Save</button>
+        <button type="button" class="btn btn-danger" id="cancelBtn">Cancel</button>
+
+    </form>
+</div>
+<script>
+    $("#ImageUpload").change(function () {
+
+        var element = this;
+        var formData = new FormData();
+        var Totalfiles = element.files.length;
+
+        for (var i = 0; i < Totalfiles; i++) {
+            var file = element.files[i];
+            formData.append("Image", file);
+        }
+
+        $.ajax({
+
+            type: 'POST',
+            url: '/Shared/UploadImage',
+            dataType: 'json',
+            data: formData,
+
+            processData: false,
+            contentType: false,
+
+        }).done(function (response) {
+            console.log(response);
+            if (response.Success) {
+                $("#ImageURL").val(response.ImageURL);
+                $("#ImageLoaded").attr("src", response.ImageURL);
+
+            }
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("FAIL");
+        });
+    });
+    $("#EditCategory").validate({
+        Rules: {
+            Name: {
+                required: true,
+                minlength: 5,
+                maxlength: 50
+            }
+            ,
+            Description: {
+                maxlength: 500,
+            }
+        },
+        Messages: {
+            Name: {
+                required: 'Name is required',
+                minlength: 'Minimum length is 5',
+                maxlength: 'Maximum length is 500'
+            },
+            Description: {
+                maxlength: 'Maximum length is 500'
+            }
+        }
+    });
+
+    $("#BtnSave").click(function () {
+        debugger;
+        if ($("#EditCategory").validate()) {
+            $.ajax({
+                type: 'POST',
+                url: 'Category/Edit',
+                data: $("#EditCategory").serialize()
+
+            }).done(function (response) {
+                $("#tableContiner").html(response);
+                $("#actionContiner").html("");
+            }).fail(function () {
+                alert("Fail");
+                //swal("warning!", "Please enter all required fields!", "warning");
+            });
+        } else {
+            swal("warning!", "please enter all required fields!", "warning");
+
+        }
+
+
+
+    });
+    $("#cancelBtn").click(function () {
+
+        $("#actionContiner").html("");
+        focusAction("tableContiner");
+
+    });
+    $("#BtnSave").click(function () {
+
+        $("#actionContiner").html("");
+        focusAction("tableContiner");
+
+    });
+
+
+</script>
+
+
+
+

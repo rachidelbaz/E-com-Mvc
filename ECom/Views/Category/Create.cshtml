@@ -1,0 +1,153 @@
+﻿
+@{
+    ViewBag.Title = "Create Category";
+}
+@{ var imageURL = "/Content/images/placeholder-image.png";
+}
+
+
+
+
+
+
+<div class="container">
+    <h2>Create Category</h2>
+    <form id="CreateCategory">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+
+                    <label>Name<span class="text-danger">*</span>:</label>
+                    <input class="form-control" name="Name" />
+                    <br />
+                    <label>Description:</label>
+                    <input name="Description" class="form-control" />
+                    <br />
+                    <label>Image:</label>
+                    <input id="ImageURL" name="ImageURL" type="hidden" />
+                    <input id="ImageUpload" name="Image" type="file" accept=".jpg,.png" />
+                </div>
+                <div class="form-group">
+                    <label>is featured ? </label>
+                    <div class="input-group">
+                        <div class="radio form-control">
+                            <input type="radio" id="isFeatured" name="isFeatured" value="true" checked="checked">True
+                        </div>
+                        <div class="radio form-control">
+                            <input type="radio" id="isNotFeatured" name="isFeatured" value="false">False
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+                <div class="thumb">
+                    <img class="img-thumbnail img-fluid" id="ImageLoaded" src="@imageURL" />
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-danger" id="BtnSave">Save</button>
+    </form>
+</div>
+
+@*<form method="post">
+        <label>Name:</label>
+        <input name="Name" />
+        <br />
+        <label>Description:</label>
+        <input name="Description" />
+        <br />
+        <label>Image:</label>
+        <input id="ImageURL" name="ImageURL" type="hidden" />
+        <input id="ImageUpload" name="Image" type="file" accept=".jpg,.png" />
+        <div class="thumb">
+            <img id="ImageLoaded" />
+        </div>
+        <br />
+        <label>is featured ? </label>
+        <input type="radio" id="isFeatured" name="isFeatured" value="true" checked="checked">True
+        <input type="radio" id="isNotFeatured" name="isFeatured" value="false">False
+        <button type="submit">Save</button>
+    </form>*@
+<script>
+    $("#CreateCategory").validate({
+        
+        rules: {
+            Name: {
+                required: true,
+                minlength: 3,
+                maxlength: 50,
+            },
+            Description: {
+                maxlength: 500
+            }
+        },
+        messages: {
+            Name: {
+                required: 'Name is required',
+                minlength: 'Minimum Length is 3',
+                maxlength: 'Maximum Length is 50'
+            },
+            Description: {
+                maxlength: 'Maximum Length is 500'
+            }
+        }
+    });
+
+    $("#BtnSave").click(function () {
+        if ($("#CreateCategory").validate()) {
+            debugger
+            $.ajax({
+                type: 'POST',
+                url: '/Category/Create',
+                data: $("#CreateCategory").serialize(),
+
+            }).done(function (response) {
+                //alert(response);
+                $("#tableContiner").html(response);
+                $("#CreateCategory").html("");
+
+            }).fail(function () {
+                swal("warning!", "Please enter all required fields!", "warning");
+            });
+        } else {
+             swal("warning!", "Please enter all required fields!", "warning");
+        }
+    });
+    $("#ImageUpload").change(function () {
+
+        var element = this;
+        var formData = new FormData();
+        var Totalfiles = element.files.length;
+
+        for (var i = 0; i < Totalfiles; i++) {
+            var file = element.files[i];
+            formData.append("Image", file);
+        }
+
+        $.ajax({
+
+            type: 'POST',
+            url: '/Shared/UploadImage',
+            dataType: 'json',
+            data: formData,
+
+            processData: false,
+            contentType: false,
+
+        }).done(function (response) {
+            console.log(response);
+            if (response.Success) {
+                $("#ImageURL").val(response.ImageURL);
+                $("#ImageLoaded").attr("src", response.ImageURL);
+
+            }
+        }).fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            alert("FAIL");
+        });
+    });
+</script>
+
+
+

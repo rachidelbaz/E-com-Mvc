@@ -1,0 +1,191 @@
+﻿
+@model ECom.ViewModels.CategorySearchViewModel
+@{
+    ViewBag.Title = "CategoryTable";
+}
+<div>
+    <div class="row">
+        <div class="col-md-8">
+            <form method="post">
+                <div class="form-group">
+                    <label>Search</label>
+                    <input class="form-control" id="txtsearch" name="search" />
+
+                </div>
+            </form>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label>Action </label>
+                <div class="row">
+                    <div class="col-md-4">
+                        <button class="form-control" type="button" id="SearchBtn">Search</button>
+                    </div>
+                    <div class="col-md-4">
+                        <button class="form-control" type="button" id="BtnNew">New</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<table id="myTable" class="table table-striped">
+    <thead>
+        <tr>
+
+            <th class="font-weight-bold">Category Name</th>
+            <th class="font-weight-bold">Products</th>
+            <th class="font-weight-bold wrap-td">Actions</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.categories != null && Model.categories.Count > 0)
+        {
+
+            foreach (var category in Model.categories)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>
+
+                        @if (category.products != null)
+                        {
+                            <text>@category.products.Count</text>
+                        }
+                        else
+                        {
+                            <text>-</text>
+                        }
+                    </td>
+
+                    <td class="wrap-td">
+                        <button class="editBtn" data-id="@category.ID">Edit</button>
+                        <button class="deleteBtn" data-id="@category.ID">Delete</button>
+
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td class="text-danger" colspan="4">No Categories found.</td>
+            </tr>
+        }
+    </tbody>
+
+
+</table>
+<div>
+    @if (Model.pager != null && Model.pager.TotalPages > 1)
+    {
+
+
+        if (Model.pager.CurrentPage > 1)
+        {
+            <button class="pageButtons" data-pageNo="1">First</button>
+
+            <button class="pageButtons" data-pageNo="@(Model.pager.CurrentPage - 1)">Previous</button>
+        }
+        for (int page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+        {
+            string activeClass = Model.pager.CurrentPage == page ? "active bg-info" : string.Empty;
+            <button class="@activeClass pageButtons" data-pageNo="@page">@page</button>
+        }
+        if (Model.pager.CurrentPage < Model.pager.EndPage)
+        {
+            <button class="pageButtons" data-pageNo="@(Model.pager.CurrentPage + 1)">Next</button>
+            <button class="pageButtons" data-pageNo="@(Model.pager.EndPage)">Last</button>
+
+        }
+    }
+
+</div>
+<script>
+
+    $("#BtnNew").click(function () {
+		//$("#actionContiner").html("");
+
+		focusAction("actionContiner");
+	});
+
+    $(".pageButtons").click(function () {
+
+        $.ajax({
+            url: "/Category/CategoryTable",
+            data: {
+                pageNo: $(this).attr("data-pageNo"),
+                search: '@Model.SearchTerm',
+            }
+        }).done(function (Response) {
+            $("#tableContiner").html(Response);
+        }
+        ).fail(function () {
+            alert("Fail");
+        })
+    });
+
+
+
+    $("#SearchBtn").click(function () {
+        debugger;
+        var SearchValue = $("#txtsearch").val();
+
+        $.ajax({
+            url: '/Category/CategoryTable',
+            data: {
+                search:SearchValue
+            }
+
+        }).done(function (Response) {
+            alert(SearchValue);
+            console.log(Response);
+            $("#tableContiner").html(Response);
+        }).fail(function () {
+            alert("Fail");
+        });
+    });
+    $("#BtnNew").click(function () {
+        $.ajax({
+            url: '/Category/Create',
+
+        }).done(function (response) {
+            $("#actionContiner").html(response);
+
+            //alert(response)
+        }).fail(function () {
+            alert("Fail");
+        });
+    });
+    $(".editBtn").click(function () {
+		focusAction("actionContiner");
+        $.ajax({
+            url: '/Category/Edit/',
+            data: {
+                ID: $(this).attr("data-id"),
+
+            }
+        }).done(function (Response) {
+            $("#actionContiner").html(Response);
+        }).fail(function () {
+            alert("Fail");
+        });
+    });
+    $(".deleteBtn").click(function () {
+        var ConfirmDelete = confirm("Are you sure to delete this?");
+        if (ConfirmDelete) {
+            $.ajax({
+                type: "POST",
+                url: "/Category/Delete",
+                data: { ID: $(this).attr("data-id") }
+            }).done(function (Response) {
+                $("#tableContiner").html(Response);
+            }).fail(function () {
+                alert("Fail");
+            });
+        }
+
+    });
+</script>

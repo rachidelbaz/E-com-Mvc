@@ -1,0 +1,16 @@
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\ECom.Service.dll.config
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\ECom.Service.dll
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\ECom.Service.pdb
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\ECom.Database.dll
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\ECom.Entities.dll
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\EntityFramework.dll
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\ECom.Database.pdb
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\ECom.Database.dll.config
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\ECom.Entities.pdb
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\EntityFramework.xml
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\obj\Debug\ECom.Service.csprojAssemblyReference.cache
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\obj\Debug\ECom.Service.csproj.CopyComplete
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\obj\Debug\ECom.Service.dll
+C:\Users\El baz Rachid\source\repos\ECom\ECom.Service\obj\Debug\ECom.Service.pdb

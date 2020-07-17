@@ -1,0 +1,191 @@
+﻿@model ECom.ViewModels.OrderSearchViewModel
+    @{
+        ViewBag.Title = "OrderTable";
+    }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+    @*<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.css">*@
+
+    @*<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.js"></script>*@
+    @if(Model.Orders!=null && Model!=null){
+
+    <div>
+        <div class="row">
+            <div class="col-md-8">
+                <form method="post">
+                    <div class="form-group">
+                        <label>Search</label>
+                        <input class="form-control" id="txtsearch" name="search" />
+
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Action </label>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <button class="form-control" type="button" id="SearchBtn">Search</button>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <table id="myTable" class="table table-striped">
+        <thead>
+            <tr class="">
+
+                <th class="font-weight-bold">User Name</th>
+                <th class="font-weight-bold">Order Time </th>
+                <th class="font-weight-bold">Total Amount</th>
+                <th class="font-weight-bold">Status</th>
+                <th class="font-weight-bold wrap-td">Actions</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Orders != null && Model.Orders.Count > 0)
+            {
+
+                foreach (var Order in Model.Orders)
+                {
+            <tr>
+                @foreach (var user in Model.Users)
+                {
+                   if (Order.UserId == user.userId)
+                   {<td>@user.UserName </td>}
+                }
+                <td>
+                    @Order.OrderedAt
+                </td>
+                <td>
+                    @Order.TotalAmount
+                </td>
+                <td>@Order.Status</td>
+                <td class="wrap-td">
+                    <a class="DetailsBtn" href="@Url.Action("Detail","Order" ,new {Id=Order.Id })" >Details</a>
+
+                </td>
+            </tr>
+                }
+            }
+            else
+            {
+        <tr>
+            <td class="text-danger" colspan="5">No Orders found.</td>
+            <td style="display: none"></td>
+            <td style="display: none"></td>
+            <td style="display: none"></td>
+            <td style="display: none"></td>
+        </tr>
+            }
+        </tbody>
+
+
+    </table>
+    <div>
+        @*@if (Model.pager != null && Model.pager.TotalPages > 1)
+        {
+            if (Model.pager.CurrentPage > 1)
+            {
+                <a class="PageNo" href="@Url.Action("OrderTable","Order" ,new {UserName=Model.UserName,PageNo=Model.PageNo })">First</a>
+                <a class="PageNo"href="@Url.Action("OrderTable","Order" ,new {UserName=Model.UserName,PageNo=Model.pager.CurrentPage-1 })" >Previous</a>
+            }
+
+            for (int page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+            {
+                var activClass = Model.pager.CurrentPage == page ? "active bg-info" : string.Empty;
+                <a class="PageNo @activClass" href="@Url.Action("OrderTable","Order" ,new {UserName=Model.UserName,PageNo=page })">@page</a>
+            }
+            if (Model.pager.CurrentPage < Model.pager.EndPage)
+            {
+                <a class="PageNo" href="@Url.Action("OrderTable","Order" ,new {UserName=Model.UserName,PageNo=Model.pager.CurrentPage+1 })">Next</a>
+                <a class="PageNo" href="@Url.Action("OrderTable","Order" ,new {UserName=Model.UserName,PageNo=Model.pager.EndPage })">Last</a>
+            }
+
+
+        }*@
+        @if (Model.pager != null && Model.pager.TotalPages > 1)
+        {
+            if (Model.pager.CurrentPage > 1)
+            {
+                <button class="PageNo" data-pageNo="@(Model.pager.StartPage)">First</button>
+                <button class="PageNo" data-pageNo="@(Model.pager.CurrentPage-1)">Previous</button>
+            }
+
+            for (int page = Model.pager.StartPage; page <= Model.pager.EndPage; page++)
+            {
+                var activClass = Model.pager.CurrentPage == page ? "active bg-info" : string.Empty;
+                <button class="PageNo @activClass" data-pageNo="@(page)">@page</button>
+            }
+            if (Model.pager.CurrentPage < Model.pager.EndPage)
+            {
+                <button class="PageNo" data-pageNo="@(Model.pager.CurrentPage+1)">Next</button>
+                <button class="PageNo" data-pageNo="@(Model.pager.EndPage)">Last</button>
+            }
+
+
+        }
+    </div>
+    }
+    <script>
+
+    //$('#myTable').DataTable(); pagination with jquery
+
+        $(".PageNo").click(function () {
+            debugger
+        $.ajax({
+            url: '@Url.Action("OrderTable","Order")', 
+            data: {
+                UserName: '@Model.UserName',
+                PageNo: $(this).attr("data-pageNo")
+
+            }
+        }).done(function (Response) {
+            $("#tableContiner").html(Response);
+        }
+        ).fail(function () {
+            alert("Fail");
+        })
+    });
+
+
+
+    $("#SearchBtn").click(function () {
+
+        var SearchValue = $("#txtsearch").val();
+        $.ajax({
+            url: '@Url.Action("OrderTable","Order")', 
+            data: {
+                UserName: SearchValue
+
+            }
+
+        }).done(function (Response) {
+            $("#tableContiner").html(Response);
+        }).fail(function () {
+            alert("Fail");
+        });
+    });
+
+        @*$(".DetailsBtn").click(function () {
+            debugger
+            $.ajax({
+            type:"POST",
+            url: '@Url.Action("Detail","Order")',
+            data: {
+                Id: $(this).attr("data-id"),
+            }
+            }).done(function (Response) {
+            
+            $("#actionContiner").html(Response);
+        }).fail(function () {
+            alert("Fail");
+        });
+    });*@
+    </script>
+

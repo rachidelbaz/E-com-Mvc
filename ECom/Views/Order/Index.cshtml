@@ -1,0 +1,29 @@
+﻿@model ECom.ViewModels.OrderSearchViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="container">
+    <h2>Index</h2>
+
+    <div id="tableContiner">
+        @{
+            Html.RenderAction("OrderTable");
+
+        }
+
+    </div>
+    <hr />
+    <div id="actionContiner">
+
+    </div>
+</div>
+<script>
+    function focusAction(controlToFocus) {
+        $('html, body').animate({
+            scrollTop: $('#' + controlToFocus).offset().top - 100
+        }, 1000);
+    }
+
+</script>
+
